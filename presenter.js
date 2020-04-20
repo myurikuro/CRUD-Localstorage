@@ -1,7 +1,7 @@
 import { Person } from './person.js';
 import { ListView } from './listview.js';
 import { Model } from './model.js';
-import { DetailView } from './detailview.js';
+import { CreateUpdateView } from './createupdateview.js';
 
 export class Presenter {
   //------ S T A R T -------------
@@ -18,22 +18,12 @@ export class Presenter {
   //------ from ListView ----------
   buttonUpdateClicked(index) {
     const person = this.model.getPerson(index);
-
-    this.actualIndex = index; // read, when buttonSaveClicked is called
-    this.view = new DetailView(this);
-
-    this.view.setName(person.name);
-    this.view.setBirthday(person.birthday);
+    this.view = new CreateUpdateView(this, index, person);
   }
 
   buttonNewClicked() {
-    const person = new Person('Please insert name', '1999-12-24');
-
-    this.actualIndex = -1; // read, when buttonSaveClicked is called
-    this.view = new DetailView(this);
-
-    this.view.setName(person.name);
-    this.view.setBirthday(person.birthday);
+    const person = new Person('Please insert name', '1999-12-24', true);
+    this.view = new CreateUpdateView(this, -1, person);
   }
 
   buttonDeleteClicked(index) {
@@ -41,20 +31,29 @@ export class Presenter {
     this._showListView();
   }
 
-  //------ from DetailView ------------
-  buttonSaveClicked() {
-    // read data from DetailView
+  getAnzahlFreunde(){
+    return this.model.getFreunde();
+  }
+
+  getAge(){
+    console.log(this.model.getPersonAge());
+    return this.model.getPersonAge();
+  }
+
+  //------ from CreateUpdateView ------------
+  buttonSaveClicked(index) {
+    // read data from CreateUpdateView
     const newName = this.view.getName();
     const newBirthday = this.view.getBirthday();
-    const newPerson = new Person(newName, newBirthday);
+    const newFreund = this.view.getFreund();
+    const newPerson = new Person(newName, newBirthday, newFreund);
 
-    // actualIndex is set in buttonNewClicked / buttonUpdateClicked
-    if (this.actualIndex < 0) {
+    if (index < 0) {
       // create new person
       this.model.addPerson(newPerson);
     } else {
       // update existing person
-      this.model.updatePerson(this.actualIndex, newPerson);
+      this.model.updatePerson(index, newPerson);
     }
 
     this._showListView();

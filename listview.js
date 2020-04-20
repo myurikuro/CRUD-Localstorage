@@ -3,12 +3,19 @@ export class ListView {
     this.presenter = presenter;
 
     // ---- HTML ----
-    let htmlTable = '<tr><th>Name</th><th>Birthday</th><th></th></tr>';
+    let htmlTable = '<tr><th>Name</th><th>Birthday</th><th>Freund</th><th>Alter</th><th></th></tr>';
     for (let i = 0; i < personList.length; i++) {
       const person = personList[i];
+
+      let isAFriend = "Nein";
+      if (person.freund) {
+        isAFriend = "Ja";
+      }
       const htmlTr = `<tr>
               <td>${person.name}</td>
               <td>${person.birthday}</td>
+              <td>${isAFriend}</td>
+              <td>${this.presenter.getAge()}</td>
               <td><button class="buttonUpdate">Update</button></td>
               <td><button class="buttonDelete">Delete</button></td>
           </tr>`;
@@ -21,6 +28,7 @@ export class ListView {
             ${htmlTable}
         </table>
         <button id="buttonNew">New</button>
+        <p>Ich habe ${this.presenter.getAnzahlFreunde()} freunde<p>
         `;
     this.app = document.getElementById('app');
     this.app.innerHTML = html;
